@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">SpotFinder</string>
+    <string name="google_maps_key">YOUR_API_KEY_HERE</string>
+    <string name="label_search_section">Search / Query</string>
+    <string name="hint_search_address">Enter address to find</string>
+    <string name="button_find">Find Location</string>
+    <string name="label_crud_section">Manage Locations</string>
+    <string name="hint_location_id">Location ID (for update/delete)</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_latitude">Latitude</string>
+    <string name="hint_longitude">Longitude</string>
+    <string name="button_add">Add</string>
+    <string name="button_update">Update</string>
+    <string name="button_delete">Delete</string>
+    <string name="label_saved_locations">Saved Locations</string>
+    <string name="error_empty_search">Enter an address to search</string>
+    <string name="error_address_not_found">Address not found in database</string>
+    <string name="error_address_required">Address is required</string>
+    <string name="error_invalid_coordinates">Enter valid latitude and longitude</string>
+    <string name="error_id_required">ID is required for this action</string>
+    <string name="error_delete_missing">Provide an ID or address to delete</string>
+    <string name="message_insert_success">Location added</string>
+    <string name="message_insert_failure">Unable to add location</string>
+    <string name="message_update_success">Location updated</string>
+    <string name="message_update_failure">No location updated</string>
+    <string name="message_delete_success">Location deleted</string>
+    <string name="message_delete_failure">No location deleted</string>
+    <string name="coordinates_format">Lat: %.5f, Lng: %.5f</string>
 </resources>

@@ -14,6 +14,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+/**
+ * Main entry point that wires together the map, list, and CRUD interactions for locations.
+ */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var databaseHelper: LocationDatabaseHelper
@@ -28,6 +31,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationAdapter: LocationAdapter
     private val locations = mutableListOf<Location>()
 
+    /**
+     * Initializes the user interface, database helper, map fragment, and list of locations.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -61,6 +67,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         loadLocations()
     }
 
+    /**
+     * Receives the GoogleMap instance and configures the default camera and gestures.
+     */
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         map.uiSettings.isZoomControlsEnabled = true
@@ -71,6 +80,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(gta, 9f))
     }
 
+    /**
+     * Attempts to find a location matching the search query and displays it if found.
+     */
     private fun handleSearch() {
         val query = searchInput.text.toString().trim()
         if (query.isEmpty()) {
@@ -86,6 +98,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Validates input and inserts a new location into the database.
+     */
     private fun handleAdd() {
         val address = addressInput.text.toString().trim()
         val lat = latitudeInput.text.toString().trim().toDoubleOrNull()
@@ -110,6 +125,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Validates the provided id and coordinates before updating an existing location.
+     */
     private fun handleUpdate() {
         val id = idInput.text.toString().trim().toLongOrNull()
         val address = addressInput.text.toString().trim()
@@ -138,6 +156,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Deletes a location using either the supplied id or address.
+     */
     private fun handleDelete() {
         val id = idInput.text.toString().trim().toLongOrNull()
         val address = addressInput.text.toString().trim()
@@ -163,6 +184,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Clears the current markers and focuses the map on the specified location.
+     */
     private fun displayLocationOnMap(location: Location) {
         val map = googleMap ?: return
         val latLng = LatLng(location.latitude, location.longitude)
@@ -171,6 +195,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
     }
 
+    /**
+     * Copies location details into the CRUD input fields for easy editing.
+     */
     private fun populateFields(location: Location) {
         idInput.setText(location.id.toString())
         addressInput.setText(location.address)
@@ -178,12 +205,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         longitudeInput.setText(location.longitude.toString())
     }
 
+    /**
+     * Refreshes the in-memory list of locations from the database and updates the adapter.
+     */
     private fun loadLocations() {
         locations.clear()
         locations.addAll(databaseHelper.getAllLocations())
         locationAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * Clears the CRUD input fields after an operation succeeds.
+     */
     private fun clearCrudInputs() {
         idInput.text?.clear()
         addressInput.text?.clear()
@@ -191,6 +224,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         longitudeInput.text?.clear()
     }
 
+    /**
+     * Displays a short user-facing message for validation and CRUD feedback.
+     */
     private fun showToast(messageResId: Int) {
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }

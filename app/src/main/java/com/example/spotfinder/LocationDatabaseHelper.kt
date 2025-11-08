@@ -7,6 +7,9 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+/**
+ * SQLite helper responsible for storing, retrieving, and maintaining persisted locations.
+ */
 class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
     DATABASE_NAME,
@@ -14,6 +17,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
     DATABASE_VERSION
 ) {
 
+    /**
+     * Creates the schema required to persist location information and pre-populates seed data.
+     */
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
@@ -28,11 +34,17 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         prepopulate(db)
     }
 
+    /**
+     * Recreates the table when the database version changes.
+     */
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_LOCATIONS")
         onCreate(db)
     }
 
+    /**
+     * Inserts a new location record and returns its generated id.
+     */
     fun insertLocation(address: String, lat: Double, lng: Double): Long {
         val values = ContentValues().apply {
             put(COLUMN_ADDRESS, address)
@@ -42,6 +54,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return writableDatabase.insert(TABLE_LOCATIONS, null, values)
     }
 
+    /**
+     * Updates an existing location and returns the number of affected rows.
+     */
     fun updateLocation(id: Long, address: String, lat: Double, lng: Double): Int {
         val values = ContentValues().apply {
             put(COLUMN_ADDRESS, address)
@@ -56,6 +71,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         )
     }
 
+    /**
+     * Deletes a location by id and returns the number of rows removed.
+     */
     fun deleteLocation(id: Long): Int {
         return writableDatabase.delete(
             TABLE_LOCATIONS,
@@ -64,6 +82,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         )
     }
 
+    /**
+     * Finds the first location whose address matches the supplied query (case-insensitive).
+     */
     fun getLocationByAddress(address: String): Location? {
         val selection = "$COLUMN_ADDRESS LIKE ? COLLATE NOCASE"
         val selectionArgs = arrayOf("%$address%")
@@ -84,6 +105,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return null
     }
 
+    /**
+     * Returns all saved locations ordered alphabetically by address.
+     */
     fun getAllLocations(): List<Location> {
         val locations = mutableListOf<Location>()
         readableDatabase.query(
@@ -102,6 +126,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return locations
     }
 
+    /**
+     * Converts the current cursor row into a [Location] instance.
+     */
     private fun Cursor.toLocation(): Location {
         val idIndex = getColumnIndexOrThrow(COLUMN_ID)
         val addressIndex = getColumnIndexOrThrow(COLUMN_ADDRESS)
@@ -115,10 +142,14 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         )
     }
 
+    /**
+     * Populates the database with a curated list of GTA locations when no data exists yet.
+     */
     private fun prepopulate(db: SQLiteDatabase) {
         val existingCount = DatabaseUtils.queryNumEntries(db, TABLE_LOCATIONS)
         if (existingCount > 0) return
 
+        // Curated seed locations across the Greater Toronto Area to showcase the app.
         val seeds = listOf(
             Seed("Oshawa Centre, Oshawa, ON", 43.8965, -78.8656),
             Seed("Durham College, Oshawa, ON", 43.9453, -78.8956),
@@ -261,6 +292,9 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(
         val longitude: Double
     )
 
+    /**
+     * Database configuration and column constants.
+     */
     companion object {
         private const val DATABASE_NAME = "spotfinder.db"
         private const val DATABASE_VERSION = 1
